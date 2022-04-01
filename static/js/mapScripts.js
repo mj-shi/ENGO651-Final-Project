@@ -25,8 +25,6 @@ oms.addListener('spiderfy', function(markers) {
     map.closePopup();
 });
 
-populateMap();
-
 var redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -135,7 +133,7 @@ function populateMap(){
                 // date contains today
                 console.log("Incident " + obj.id + " occurred today.");
                 createTI(obj.point.coordinates[1], obj.point.coordinates[0], obj.incident_info, obj.description, obj.start_dt, obj.quadrant);
-            } else if((date.indexOf(yesterday) > -1) && incidentLimit < 21) {
+            } else if((date.indexOf(yesterday) > -1) && incidentLimit < 11) {
                 // date contains yesterday and is within the incident limit for previous day incidents
                 console.log("Incident " + obj.id + " occurred yesterday.");
                 createTI(obj.point.coordinates[1], obj.point.coordinates[0], obj.incident_info, obj.description, obj.start_dt, obj.quadrant);
