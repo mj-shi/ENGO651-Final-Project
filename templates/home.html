@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
+        <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/mystyle.css') }}">
+
+        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
+        <script src=" https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+        <title>T-Tracker Home Page</title>
+    </head>
+    <body>
+        <div class="topsection">
+            <div id="toptitle">
+                <h1>
+                    T-Tracker
+                </h1>
+            </div>
+            <div id="signedin">
+                {{welcome}}
+            </div>
+            <div id="logout">
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+        <br/>
+        <div class="mapsection">
+            <h4>
+                Traffic Cameras: <img alt="Blue Icon" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png" width="25" height="41"> <br>
+                Traffic Incidents: <img alt="Red Icon" src="https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png" width="25" height="41">
+            </h4>
+        </div>
+        <div id="map" style="width: 800px; height: 600px; margin-top:10px;"></div>
+        <br/>
+        <br/>
+        <hr class="rounded">
+        <div class="updatesection">
+            <h2>
+                <strong>Most Recent User Updates</strong>
+            </h2>
+            <br/>
+            {% if message %}
+            {{message}}
+            {% endif %}
+            
+            {% if results %}        
+                {% for result in results %}
+                    <ul>
+                        <strong>Posted by: </strong> {{ result.update_user }}&nbsp;&nbsp;&nbsp;<strong>Location: </strong> {{ result.update_location }}&nbsp;&nbsp;&nbsp;<strong>Update: </strong> {{ result.comments }}&nbsp;&nbsp;&nbsp;<strong>Timestamp: </strong> {{result.update_time}}
+                    </ul>
+                {% endfor %}
+            {% endif %}
+        </div>
+        <br/>
+        <hr class="rounded">
+        {% if errormsg %}
+        {{errormsg}}
+        {% endif %}
+        <h2>
+            <strong>Post Update:</strong>
+        </h2>
+        <p>
+            <form action="{{ url_for('home') }}" method="post">
+                <div class="form-group">    
+                    Location Description (area name, road name, intersection name):
+                        <textarea name="locdesc" id="locdesc" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    Comments:
+                        <textarea name="comments" id="comments" class="form-control" rows="4" required></textarea>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">Submit</button>     
+                </div>
+            </form>
+        </p>          
+        <br/>
+        <script src="{{ url_for('static', filename='js/mapScripts.js') }}"></script>
+    </body>
+</html>

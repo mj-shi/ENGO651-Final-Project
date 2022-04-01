@@ -26,7 +26,7 @@ db = scoped_session(sessionmaker(bind=engine))
 def index():
     return redirect("/login")
 
-# Login 
+# Login Page
 @app.route("/login", methods=["GET", "POST"])
 def login():
     session.clear()
@@ -36,7 +36,7 @@ def login():
         
         result = db.execute("SELECT * FROM users WHERE username = :username AND password=:password", {"username":loginUsername, "password":loginPassword}).fetchone()
         if result is None:
-            return render_template("index.html", message="Invalid username or password.")
+            return render_template("login.html", message="Invalid username or password.")
         
         session["user_id"] = result[0]
         session["user_name"] = result[1]
@@ -44,9 +44,9 @@ def login():
         return redirect("/home")
     
     if request.method == "GET":
-        return render_template("index.html")
+        return render_template("login.html")
 
-# Register
+# Register Page
 @app.route("/register", methods=["GET", "POST"])
 def register():
     session.clear()
@@ -66,35 +66,52 @@ def register():
     if request.method == "GET":
         return render_template("register.html")
 
-# Logout 
+# Logout Page
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/login")
 
-""" # Homepage 
+# Map Home Page
 @app.route("/home", methods=["GET", "POST"])
 def home():
-    # Search book logic
-    if request.method == "POST":
-        search = request.form.get("search")
-        if not search:
-            return render_template("home.html", message="ERROR: You must provide information of the book (Title/Author/ISBN)", welcome=("Welcome "+ session["user_id"]))
-        query = "%"+search+"%"
-        results = db.execute("SELECT * FROM books WHERE title ILIKE :query OR author ILIKE :query OR isbn ILIKE :query", {"query": query}).fetchall()
-
-        if len(results) == 0:
-            return render_template("home.html", message="No Results Found.", welcome=("Welcome "+ session["user_id"]))
-        
-        return render_template("home.html", results=results, welcome=("Welcome "+ session["user_id"]))
-    
     # Checks if user is logged in
     if request.method == "GET":
         if session:
-            return render_template("home.html", welcome=("Welcome "+ session["user_id"]))
+            results = db.execute("SELECT * FROM updates ORDER BY update_time DESC LIMIT 10").fetchall()
+            if len(results) == 0:
+                return render_template("home.html", message="No Updates", welcome=("Signed in as: "+ session["user_id"]))
+
+            return render_template("home.html", results = results, welcome=("Signed in as: "+ session["user_id"]))
         else:
             return redirect("/login")
+    
+    if request.method == "POST":
+        print("post request")
+        if session:
+            currentuser = session["user_id"]
+            location = request.form.get("locdesc")
+            comments = request.form.get("comments")
 
+            if location=="" or comments=="":
+                results = db.execute("SELECT * FROM updates ORDER BY update_time DESC LIMIT 10").fetchall()
+                if len(results) == 0:
+                    return render_template("home.html", message="No Updates", error="All fields must be filled in", welcome=("Signed in as: "+ session["user_id"]))
+                return render_template("home.html", results = results, error="All fields must be filled in", welcome=("Signed in as: "+ session["user_id"]))      
+
+
+            db.execute("INSERT INTO updates (update_user, comments, update_location, update_time) VALUES(:currentuser, :comments, :location, current_timestamp(0))", {"currentuser": currentuser, "comments":comments, "location": location})
+            db.commit()
+
+            results = db.execute("SELECT * FROM updates ORDER BY update_time DESC LIMIT 3").fetchall()            
+            if len(results) == 0:
+                return render_template("home.html", message="No Updates", welcome=("Signed in as: "+ session["user_id"]))
+
+            return render_template("home.html", message="Update Posted", results = results, welcome=("Signed in as: "+ session["user_id"]))
+        
+        else:
+            return redirect("/login")
+"""
 # Book Details
 @app.route("/details/<int:id>", methods=["GET", "POST"])
 def details(id):

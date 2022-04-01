@@ -1,14 +1,13 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/mystyle.css') }}">
-        <title>T-Tracker Register Page</title>
+        <title>T-Tracker Login Page</title>
     </head>
     <body>
-        <div class="registertopsection">
-            <div id="registertoptitle">
+        <div class="logintopsection">
+            <div id="logintoptitle">
                 <h1>
                     T-Tracker
                 </h1>
@@ -18,30 +17,30 @@
             <img src="/static/ttlogo.jpg" alt="Avatar" class="avatar">
         </div>
         <div class="container">
-            <div id="registertitle">
+            <div id="logintitle">
                 <h2>
-                    Register
+                    Login
                 </h2>
             </div>
-            <form action="{{ url_for('register')}}" method="post">
+            <form action="{{ url_for('login')}}" method="post">
                 <div class="form-group">
-                    <input class="form-control" name="username" placeholder="Username" type="text"/>
+                    <input class ="form-control" name="username" placeholder="Username" type="text"/>
                 </div>
                 <div class="form-group">
                     <input class="form-control" name="password" placeholder="Password" type="password">
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-primary" type="submit">Register</button>
+                    <button class="btn btn-primary" type="submit">Login</button>
                 </div>
             </form>
-            <div id="registererror">
+            <div id="loginerror">
                 {% if message %}
-                    {{message}}
+                {{message}}
                 {% endif %}
-            </div>
+            </div>                
         </div>
         <div class="container">
-            Already have an account? <a href="/login">Login here.</a>
+            Don't have an account? <a href="/register">Register here.</a>
         </div>
     </body>
 </html>
