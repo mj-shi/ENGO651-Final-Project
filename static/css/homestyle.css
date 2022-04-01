@@ -6,6 +6,13 @@
     text-align: center;
 }
 
+.utopsection {
+    position: relative;
+    background-color: #333;
+    overflow: hidden;
+    text-align: center;
+}
+
 .updatesection{
   position: relative;
   overflow: hidden;
@@ -23,7 +30,11 @@ hr.rounded {
 }
 
 #map {margin: 0 auto;}
+#utoptitle {display:inline-block; text-align: center; color: whitesmoke;}
 #toptitle {display:inline-block; text-align: center; color: whitesmoke;}
 #signedin {position: absolute; top: 8px; left: 16px; font-size: 18px; color: whitesmoke;}
 #logout {position: absolute; top: 8px; right: 16px; font-size: 18px; color: whitesmoke;}
+#usignedin {position: absolute; top: 8px; left: 16px; font-size: 18px; color: whitesmoke;}
+#ulogout {position: absolute; top: 8px; right: 16px; font-size: 18px; color: whitesmoke;}
 #refreshsection {text-align: center;}
+#updatetitle {text-align: center;}

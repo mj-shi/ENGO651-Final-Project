@@ -44,9 +44,12 @@
         <hr class="rounded">
         <div class="updatesection">
             <h2>
-                <strong>Most Recent User Updates</strong>
+                <strong>Recent User Updates</strong>
             </h2>
             <br/>
+            {% if message %}
+            {{message}}
+            {% endif %}
             {% if results %}        
                 {% for result in results %}
                     <ul>
@@ -54,6 +57,8 @@
                     </ul>
                 {% endfor %}
             {% endif %}
+            <br/>
+            <a href="/updates">View All Updates</a>
         </div>
         <br/>
         <hr class="rounded">
@@ -78,11 +83,18 @@
                 </div>
             </form>
             <br/>
-            {% if message %}
-            {{message}}
+            {% if pmessage %}
+            {{pmessage}}
             {% endif %}
         </p>          
         <br/>
+        <hr class="rounded">
+        <br/>
+        <div class="analyticsection">
+            <h2>
+                <strong>Traffic Incident Analytics (Past 24 hours)</strong>
+            </h2>
+        </div>
         <script src="{{ url_for('static', filename='js/mapScripts.js') }}"></script>
     </body>
 </html>

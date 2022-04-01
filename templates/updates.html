@@ -1,0 +1,47 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/homestyle.css') }}">
+        <title>T-Tracker Updates Page</title>
+    </head>
+    <body>
+        <div class="utopsection">
+            <div id="utoptitle">
+                <h1>
+                    T-Tracker
+                </h1>
+            </div>
+            <div id="usignedin">
+                {{welcome}}
+            </div>
+            <div id="ulogout">
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+        <br/>
+        <div class="container">
+            <a href="/home">Return to Home</a>
+        </div>
+        <br/>
+        <div class="container">
+            <div id="utitle">
+                <h2>
+                    Updates
+                </h2>
+                <br/>
+                {% if message %}
+                {{message}}
+                {% endif %}
+                {% if results %}        
+                {% for result in results %}
+                    <ul>
+                        <strong>Posted by: </strong> {{ result.update_user }}&nbsp;&nbsp;&nbsp;<strong>Location: </strong> {{ result.update_location }}&nbsp;&nbsp;&nbsp;<strong>Update: </strong> {{ result.comments }}&nbsp;&nbsp;&nbsp;<strong>Timestamp: </strong> {{result.update_time}}
+                    </ul>
+                {% endfor %}
+            {% endif %}
+            </div>
+        </div>
+    </body>
+</html>

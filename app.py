@@ -76,7 +76,6 @@ def logout():
 # Map Home Page
 @app.route("/home", methods=["GET", "POST"])
 def home():
-    # Checks if user is logged in
     if request.method == "GET":
         if session:
             results = db.execute("SELECT * FROM updates ORDER BY update_time DESC LIMIT 10").fetchall()
@@ -108,7 +107,22 @@ def home():
             if len(results) == 0:
                 return render_template("home.html", message="No Updates", welcome=("Signed in as: "+ session["user_id"]))
 
-            return render_template("home.html", message="Update Posted", results = results, welcome=("Signed in as: "+ session["user_id"]))
+            return render_template("home.html", pmessage="Update Posted", results = results, welcome=("Signed in as: "+ session["user_id"]))
         
         else:
             return redirect("/login")
+
+# Updates Page
+@app.route("/updates", methods=["GET"])
+def updates():
+    # Checks if user is logged in
+    if request.method == "GET":
+        if session:
+            results = db.execute("SELECT * FROM updates ORDER BY update_time DESC").fetchall()
+            if len(results) == 0:
+                return render_template("updates.html", message="No Updates", welcome=("Signed in as: "+ session["user_id"]))
+
+            return render_template("updates.html", results = results, welcome=("Signed in as: "+ session["user_id"]))
+        else:
+            return redirect("/login")
+    
