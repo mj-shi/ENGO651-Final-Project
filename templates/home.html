@@ -5,7 +5,7 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css">
         <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css">
-        <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/mystyle.css') }}">
+        <link rel="stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/homestyle.css') }}">
 
         <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/OverlappingMarkerSpiderfier-Leaflet/0.2.6/oms.min.js"></script>
@@ -36,6 +36,10 @@
         </div>
         <div id="map" style="width: 800px; height: 600px; margin-top:10px;"></div>
         <br/>
+        <div id="refreshsection">
+            <button type="button" id="refreshButton" onclick="refreshMap()">Refresh Map</button>  
+        </div>
+        <br/>
         <br/>
         <hr class="rounded">
         <div class="updatesection">
@@ -43,10 +47,6 @@
                 <strong>Most Recent User Updates</strong>
             </h2>
             <br/>
-            {% if message %}
-            {{message}}
-            {% endif %}
-            
             {% if results %}        
                 {% for result in results %}
                     <ul>
@@ -66,17 +66,21 @@
         <p>
             <form action="{{ url_for('home') }}" method="post">
                 <div class="form-group">    
-                    Location Description (area name, road name, intersection name):
+                    Location Description:
                         <textarea name="locdesc" id="locdesc" class="form-control" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
-                    Comments:
+                    Incident Description:
                         <textarea name="comments" id="comments" class="form-control" rows="4" required></textarea>
                 </div>
                 <div class="form-group">
                     <button class="btn btn-primary" type="submit">Submit</button>     
                 </div>
             </form>
+            <br/>
+            {% if message %}
+            {{message}}
+            {% endif %}
         </p>          
         <br/>
         <script src="{{ url_for('static', filename='js/mapScripts.js') }}"></script>

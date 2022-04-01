@@ -104,7 +104,7 @@ def home():
             db.execute("INSERT INTO updates (update_user, comments, update_location, update_time) VALUES(:currentuser, :comments, :location, current_timestamp(0))", {"currentuser": currentuser, "comments":comments, "location": location})
             db.commit()
 
-            results = db.execute("SELECT * FROM updates ORDER BY update_time DESC LIMIT 3").fetchall()            
+            results = db.execute("SELECT * FROM updates ORDER BY update_time DESC LIMIT 10").fetchall()            
             if len(results) == 0:
                 return render_template("home.html", message="No Updates", welcome=("Signed in as: "+ session["user_id"]))
 

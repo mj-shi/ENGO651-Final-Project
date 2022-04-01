@@ -25,6 +25,8 @@ oms.addListener('spiderfy', function(markers) {
     map.closePopup();
 });
 
+populateMap();
+
 var redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -144,15 +146,8 @@ function populateMap(){
     map.addLayer(markers);
 }
 
-// Refresh Map
+// Refresh map button
 function refreshMap(){
-    
-}
-
-
-// Logic after search button is clicked
-function searchPermit() {
-    // Clear map of markers
     map.closePopup();
     map.eachLayer(function(layer) {
         if(!!layer.toGeoJSON) {
@@ -161,23 +156,20 @@ function searchPermit() {
     });
     oms.clearMarkers();
     markers.clearLayers();
-
-    // Get url for api call
-    var startDatePicker = document.getElementById("startDate");
-    var endDatePicker = document.getElementById("endDate");
-    var startDate = startDatePicker.value;
-    var endDate = endDatePicker.value;
-    var url = `https://data.calgary.ca/resource/c2es-76ed.geojson?$where=issueddate%20%3E%20%27${startDate}%27%20and%20issueddate%20%3C%20%27${endDate}%27&$select=issueddate,workclassgroup,contractorname,communityname,originaladdress,latitude,longitude`;
-    
-    // Read json and create points
-    fetch(url)
-    .then(res=>res.json())
-    .then(data=>{
-        data.features.forEach(feature => {
-            createPoint(feature.properties.latitude, feature.properties.longitude, feature.properties.communityname, feature.properties.contractorname,
-                 feature.properties.issueddate, feature.properties.originaladdress, feature.properties.workclassgroup);
-        });
-        map.addLayer(markers);
-    });
+    populateMap();
+    map.flyTo(new L.LatLng(51.049999, -114.066666), 10);
 }
-populateMap();
+
+// Auto refresh map after every 10 minutes
+function autoRefresh(){
+    map.eachLayer(function(layer) {
+        if(!!layer.toGeoJSON) {
+            map.removeLayer(layer);
+        }
+    });
+    oms.clearMarkers();
+    markers.clearLayers();
+    populateMap();
+    setTimeout(autoRefresh, 600000);
+}
+autoRefresh();
