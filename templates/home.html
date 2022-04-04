@@ -46,6 +46,9 @@
             <h2>
                 <strong>Recent User Updates</strong>
             </h2>
+            <form action="{{ url_for('home') }}" method="get">
+                <button class="btn btn-primary" type="submit">Refresh</button>    
+            </form>
             <br/>
             {% if message %}
             {{message}}
