@@ -186,7 +186,6 @@ function populateMap(){
         });
     });
     map.addLayer(markers);
-    console.log("Other func " + aData.accidents + " " + aData.accidentsNE + " " + aData.accidentsNW);
 }
 
 // Refresh map button
@@ -262,9 +261,9 @@ function updateAnalytics() {
 
     var change = percentIncrease(aData.accidents, accidents);
     if(change < 0){
-        document.getElementById("changeperc").innerHTML = "There are " + change + "% less incidents today than in 2017.";  
+        document.getElementById("changeperc").innerHTML = "There are " + change + "% incidents today than in 2017.";  
     } else if (change > 0) {
-        document.getElementById("changeperc").innerHTML = "There are +" + change + "% more incidents today than in 2017."; 
+        document.getElementById("changeperc").innerHTML = "There are +" + change + "% incidents today than in 2017."; 
     } else {
         document.getElementById("changeperc").innerHTML = "There are the same number of incidents today when compared to 2017"; 
     }
