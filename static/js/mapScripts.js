@@ -158,6 +158,56 @@ function refreshMap(){
     map.flyTo(new L.LatLng(51.049999, -114.066666), 10);
 }
 
+// Retrieve analytics
+function getAnalytics(){
+    var accidents = 0;
+    var accidentsNE = 0;
+    var accidentsNW = 0;
+    var accidentsSE = 0;
+    var accidentsSW = 0;
+    var h16accidents = 0;
+    var h16accidentsNE = 0;
+    var h16accidentsNW = 0;
+    var h16accidentsSE = 0;
+    var h16accidentsSW = 0;
+    var h17accidents = 0;
+    var h17accidentsNE = 0;
+    var h17accidentsNW = 0;
+    var h17accidentsSE = 0;
+    var h17accidentsSW = 0;
+    var urlTI = "https://data.calgary.ca/resource/35ra-9556.json";
+
+    var incidentLimit = 0;
+    fetch(urlTI)
+    .then(res=>res.json())
+    .then(data=>{
+        data.forEach(obj => {
+            var date = obj.start_dt;
+            var today = getToday();
+            var yesterday = getYesterday();
+            console.log(today);
+            console.log(yesterday);
+            if(date.indexOf(today) > -1 || date.indexOf(yesterday) > -1) {
+                // date was within past 24 hours
+                accidents++;
+            }
+            if(obj.quadrant=="NE"){
+                accidentsNE++;
+            } else if (obj.quadrant=="NW") {
+                accidentsNW++;
+            } else if (obj.quadrant=="SE") {
+                accidentsSE++;
+            } else if (obj.quadrant=="SW") {
+                accidentsSW++;
+            }
+        });
+    });
+    //console.log("There were " + accidents + "in the past 24 hours.");
+
+
+
+}
+
 // Auto refresh map after every 10 minutes
 function autoRefresh(){
     map.eachLayer(function(layer) {
@@ -170,7 +220,9 @@ function autoRefresh(){
     populateMap();
     setTimeout(autoRefresh, 600000);
 }
+
 autoRefresh();
+getAnalytics();
 
 //Saves and stores scroll location so it doesn't reset after page refresh
 window.addEventListener('scroll',function() {
