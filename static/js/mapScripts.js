@@ -1,3 +1,7 @@
+// Analytics variables
+var cData;
+var aData;
+
 // Create map
 var map = L.map('map').setView([51.049999, -114.066666], 10);
 
@@ -103,7 +107,46 @@ function getYesterday(){
     var datetime = year + "-" + month + "-" + day;
 
     return datetime;
+}
 
+// Get today (analytics)
+function getTodayA(){
+    var date = new Date();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+
+    if(month.toString().length == 1) {
+        month = '0'+month;
+    }    
+
+    if(day.toString().length == 1) {
+        day = '0'+day;
+    }
+
+    var datetime = month + "-" + day;
+
+    return datetime;
+}
+
+// Get yesterday (analytics)
+function getYesterdayA(){
+    var date = new Date();
+    var yesterday = new Date(date);
+    yesterday.setDate(yesterday.getDate()-1);
+    var month = yesterday.getMonth() + 1;
+    var day = yesterday.getDate();
+
+    if(month.toString().length == 1) {
+        month = '0'+month;
+    }    
+
+    if(day.toString().length == 1) {
+        day = '0'+day;
+    }
+
+    var datetime = month + "-" + day;
+
+    return datetime;
 }
 
 // Populate map with points
@@ -121,6 +164,7 @@ function populateMap(){
         });
     });
 
+    // Read traffic incident json
     var incidentLimit = 0;
     fetch(urlTI)
     .then(res2=>res2.json())
@@ -142,6 +186,7 @@ function populateMap(){
         });
     });
     map.addLayer(markers);
+    console.log("Other func " + aData.accidents + " " + aData.accidentsNE + " " + aData.accidentsNW);
 }
 
 // Refresh map button
@@ -159,7 +204,10 @@ function refreshMap(){
 }
 
 // Auto refresh map after every 10 minutes
-function autoRefresh(){
+async function autoRefresh(){
+    aData = await fetchAnalytics();
+    cData = await fetchCurrent();
+
     map.eachLayer(function(layer) {
         if(!!layer.toGeoJSON) {
             map.removeLayer(layer);
@@ -168,15 +216,80 @@ function autoRefresh(){
     oms.clearMarkers();
     markers.clearLayers();
     populateMap();
+    updateAnalytics();
     setTimeout(autoRefresh, 600000);
 }
 
-autoRefresh();
-getAnalytics();
+// fetch database result from py file
+async function fetchAnalytics() {
+    const url = '/analytics';
+    let response = await fetch(url);
+    let data = await response.json();
+    return data;
+}
 
-//Saves and stores scroll location so it doesn't reset after page refresh
+async function fetchCurrent(){
+    const url = 'https://data.calgary.ca/resource/35ra-9556.json';
+    let response = await fetch(url);
+    let data = await response.json();
+    return data;
+}
+
+function updateAnalytics() {
+    var accidents = 0;
+    var accidentsne = 0;
+    var accidentsnw = 0;
+    var accidentsse = 0;
+    var accidentssw = 0;
+
+    for(var obj of cData) {
+        date = obj.start_dt;
+        var today = getTodayA();
+        var yesterday = getYesterdayA();
+        if((date.indexOf(today) > -1) || (date.indexOf(yesterday) > -1)) {
+            accidents++;
+            if(obj.quadrant=="NE") {
+                accidentsne++;
+            } else if(obj.quadrant=="NW") {
+                accidentsnw++;
+            } else if(obj.quadrant=="SE") {
+                accidentsse++;
+            } else if(obj.quadrant=="SW") {
+                accidentssw++;
+            }
+        }
+    }
+
+    var change = percentIncrease(aData.accidents, accidents);
+    if(change < 0){
+        document.getElementById("changeperc").innerHTML = "There are " + change + "% less incidents today than in 2017.";  
+    } else if (change > 0) {
+        document.getElementById("changeperc").innerHTML = "There are +" + change + "% more incidents today than in 2017."; 
+    } else {
+        document.getElementById("changeperc").innerHTML = "There are the same number of incidents today when compared to 2017"; 
+    }
+    document.getElementById("canalyticsmsg").innerHTML = "<strong>Number of Incidents: </strong>" + accidents;
+    document.getElementById("cneaccidents").innerHTML = "<strong>Incidents in the NE Quadrant: </strong>" + accidentsne;
+    document.getElementById("cnwaccidents").innerHTML = "<strong>Incidents in the NW Quadrant: </strong>" + accidentsnw;
+    document.getElementById("cseaccidents").innerHTML = "<strong>Incidents in the SE Quadrant: </strong>" + accidentsse;
+    document.getElementById("cswaccidents").innerHTML = "<strong>Incidents in the SW Quadrant: </strong>" + accidentssw;
+    document.getElementById("analyticsmsg").innerHTML = "<strong>Number of Incidents: </strong>" + aData.accidents;
+    document.getElementById("neaccidents").innerHTML = "<strong>Incidents in the NE Quadrant: </strong>" + aData.accidentsNE;
+    document.getElementById("nwaccidents").innerHTML = "<strong>Incidents in the NW Quadrant: </strong>" + aData.accidentsNW;
+    document.getElementById("seaccidents").innerHTML = "<strong>Incidents in the SE Quadrant: </strong>" + aData.accidentsSE;
+    document.getElementById("swaccidents").innerHTML = "<strong>Incidents in the SW Quadrant: </strong>" + aData.accidentsSW;
+}
+
+function percentIncrease(x, y){
+    result = ((y - x)/Math.abs(x)) * 100;
+    return result;
+}
+
+autoRefresh();
+
+// Saves and stores scroll location so it doesn't reset after page refresh
 window.addEventListener('scroll',function() {
-    //When scroll change, you save it on localStorage.
+    // When scroll change, you save it on localStorage.
     localStorage.setItem('scrollPosition',window.scrollY);
 },false);
 

@@ -1,10 +1,12 @@
 from distutils.log import error
 import os
 import requests
+import datetime
 from flask import Flask, session, render_template, request, redirect, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from datetime import datetime
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -102,7 +104,6 @@ def home():
                     return render_template("home.html", message="No Updates", error="All fields must be filled in", welcome=("Signed in as: "+ session["user_id"]))
                 return render_template("home.html", results = results, error="All fields must be filled in", welcome=("Signed in as: "+ session["user_id"]))      
 
-
             db.execute("INSERT INTO updates (update_user, comments, update_location, update_time) VALUES(:currentuser, :comments, :location, current_timestamp(0))", {"currentuser": currentuser, "comments":comments, "location": location})
             db.commit()
 
@@ -128,4 +129,28 @@ def updates():
             return render_template("updates.html", results = results, welcome=("Signed in as: "+ session["user_id"]))
         else:
             return redirect("/login")
-    
+
+@app.route('/analytics', methods=['GET'])
+def analytics():
+    # GET request
+    if request.method == 'GET':
+        current_month = datetime.now().strftime('%m')
+        current_day = datetime.now().strftime('%d')
+        current_time = current_month + "/" + current_day
+        accidents = db.execute("SELECT count(*) FROM accidents2017 WHERE start_dt LIKE '%' || :current_time || '%'", {"current_time":current_time}).fetchone()
+        accidents = accidents[0]
+
+        accidentsNE = db.execute("SELECT count(*) FROM accidents2017 WHERE quadrant='NE' AND start_dt LIKE '%' || :current_time || '%'", {"current_time":current_time}).fetchone()
+        accidentsNE = accidentsNE[0]
+
+        accidentsNW = db.execute("SELECT count(*) FROM accidents2017 WHERE quadrant='NW' AND start_dt LIKE '%' || :current_time || '%'", {"current_time":current_time}).fetchone()
+        accidentsNW = accidentsNW[0]
+
+        accidentsSE = db.execute("SELECT count(*) FROM accidents2017 WHERE quadrant='SE' AND start_dt LIKE '%' || :current_time || '%'", {"current_time":current_time}).fetchone()
+        accidentsSE = accidentsSE[0]
+
+        accidentsSW = db.execute("SELECT count(*) FROM accidents2017 WHERE quadrant='SW' AND start_dt LIKE '%' || :current_time || '%'", {"current_time":current_time}).fetchone()
+        accidentsSW = accidentsSW[0]        
+
+        message = {'accidents':accidents, 'accidentsNE':accidentsNE, 'accidentsNW':accidentsNW, 'accidentsSE':accidentsSE, 'accidentsSW':accidentsSW}
+        return jsonify(message) 
