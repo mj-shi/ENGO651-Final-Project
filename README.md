@@ -1,6 +1,6 @@
 # ENGO651-Final-Project
-- Michael Shi (10174675): Developer, Designer, Q/A
-- Omer Babiker (30146533): Designer, Q/A, Presenter
+- Michael Shi (10174675): Developer, Designer, QA
+- Omer Babiker (30146533): Presenter, Designer, QA
 
 # Summary
 Our final project is a web application called T-Tracker. The website allows users to view traffic incidents and traffic camera feeds across Calgary.
