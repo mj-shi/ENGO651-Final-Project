@@ -29,6 +29,7 @@ oms.addListener('spiderfy', function(markers) {
     map.closePopup();
 });
 
+// Color Icons for markers
 var redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png',
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -227,6 +228,7 @@ async function fetchAnalytics() {
     return data;
 }
 
+// fetch current incident results
 async function fetchCurrent(){
     const url = 'https://data.calgary.ca/resource/35ra-9556.json';
     let response = await fetch(url);
@@ -234,6 +236,7 @@ async function fetchCurrent(){
     return data;
 }
 
+// Update analytics section 
 function updateAnalytics() {
     var accidents = 0;
     var accidentsne = 0;
@@ -279,6 +282,7 @@ function updateAnalytics() {
     document.getElementById("swaccidents").innerHTML = "<strong>Incidents in the SW Quadrant: </strong>" + aData.accidentsSW;
 }
 
+// Perform percent increase calculations
 function percentIncrease(x, y){
     result = ((y - x)/Math.abs(x)) * 100;
     return result;
