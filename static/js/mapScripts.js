@@ -166,7 +166,6 @@ function populateMap(){
     });
 
     // Read traffic incident json
-    var incidentLimit = 0;
     fetch(urlTI)
     .then(res2=>res2.json())
     .then(data2=>{
@@ -178,11 +177,6 @@ function populateMap(){
                 // date contains today
                 console.log("Incident " + obj.id + " occurred today.");
                 createTI(obj.point.coordinates[1], obj.point.coordinates[0], obj.incident_info, obj.description, obj.start_dt, obj.quadrant);
-            } else if((date.indexOf(yesterday) > -1) && incidentLimit < 11) {
-                // date contains yesterday and is within the incident limit for previous day incidents
-                console.log("Incident " + obj.id + " occurred yesterday.");
-                createTI(obj.point.coordinates[1], obj.point.coordinates[0], obj.incident_info, obj.description, obj.start_dt, obj.quadrant);
-                incidentLimit++;
             }
         });
     });
@@ -247,8 +241,7 @@ function updateAnalytics() {
     for(var obj of cData) {
         date = obj.start_dt;
         var today = getTodayA();
-        var yesterday = getYesterdayA();
-        if((date.indexOf(today) > -1) || (date.indexOf(yesterday) > -1)) {
+        if((date.indexOf(today) > -1)) {
             accidents++;
             if(obj.quadrant=="NE") {
                 accidentsne++;
@@ -291,12 +284,12 @@ function percentIncrease(x, y){
 autoRefresh();
 
 // Saves and stores scroll location so it doesn't reset after page refresh
-window.addEventListener('scroll',function() {
-    // When scroll change, you save it on localStorage.
-    localStorage.setItem('scrollPosition',window.scrollY);
-},false);
+// window.addEventListener('scroll',function() {
+//     // When scroll change, you save it on localStorage.
+//     localStorage.setItem('scrollPosition',window.scrollY);
+// },false);
 
-window.addEventListener('load',function() {
-    if(localStorage.getItem('scrollPosition') !== null)
-       window.scrollTo(0, localStorage.getItem('scrollPosition'));
-},false);
+// window.addEventListener('load',function() {
+//     if(localStorage.getItem('scrollPosition') !== null)
+//        window.scrollTo(0, localStorage.getItem('scrollPosition'));
+// },false);
