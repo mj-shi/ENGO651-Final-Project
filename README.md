@@ -19,8 +19,17 @@ The map will automatically refresh every 10 minutes to check for new incident up
 - User wants to view the roads and traffic status before leaving his house. He can view the traffic cameras on the path of his drive.
 - User can compare today's incident data and historical data by looking at the analytics section.
 
+# Program-related Files
+- mapScripts.js - contains logic for home page including map creation/population and analytics
+- home.html - home page template
+- login.html - login page template
+- register.html - register page template
+- updates.html - updates page template
+- app.py - app file, contains GET/POST request logic for each page
+- import.py - file used to import historical data
+
 # How to set up the web application
-- Similar to lab 1, create a heroku app, set up database, run flask and commands
+- Create a heroku app, set up database, run flask and commands
 
 # Commands to run
 - pip/pip3 install requests
