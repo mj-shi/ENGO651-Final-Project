@@ -29,7 +29,7 @@ The map will automatically refresh every 10 minutes to check for new incident up
 - import.py - file used to import historical data
 
 # How to set up the web application
-- Create a heroku app, set up database, run flask and commands
+- Similar setup as Lab1: Create a heroku app, set up database, run flask and commands
 
 # Commands to run
 - pip/pip3 install requests
